@@ -8,7 +8,12 @@ ThisBuild / organizationName := "example"
 lazy val root = (project in file("."))
   .settings(
     name := "Doobie Transactional Tests",
-    libraryDependencies += scalaTest % Test
+    libraryDependencies ++= Seq(
+      "org.typelevel" %% "cats-effect" % "2.2.0",
+      "com.zaxxer" % "HikariCP" % "3.4.1",
+      "org.tpolecat" %% "doobie-core" % "0.9.0",
+      "org.postgresql" % "postgresql" % "42.2.12",
+      "org.scalameta" %% "munit" % "0.7.4" % Test
+    ),
+    testFrameworks += new TestFramework("munit.Framework")
   )
-
-// See https://www.scala-sbt.org/1.x/docs/Using-Sonatype.html for instructions on how to publish to Sonatype.
