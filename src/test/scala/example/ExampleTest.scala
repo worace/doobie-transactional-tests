@@ -9,14 +9,9 @@ import java.sql.Connection
 import doobie._
 import doobie.implicits._
 
-class SandboxTest extends munit.FunSuite {
+class SandboxTest extends IOSuite {
   implicit val contextShift = cats.effect.IO.contextShift(ExecutionContext.global)
   val blocker = cats.effect.Blocker.liftExecutionContext(doobie.util.ExecutionContexts.synchronous)
-  override def munitValueTransforms = super.munitValueTransforms ++ List(
-    new ValueTransform("IO", {
-      case io: IO[_] => io.unsafeToFuture()
-    })
-  )
 
   def startPool: HikariDataSource = {
     val conf = new HikariConfig()
@@ -57,9 +52,9 @@ class SandboxTest extends munit.FunSuite {
 }
 
 
-class ExampleTest extends SandboxTest {
+class TransactionalExampleTest extends SandboxTest {
   fixture.test("transactional test") { ctx: Context =>
-    val cio = for {
+    for {
       _ <- sql"insert into foods (name) values ('pizza')".update.run.transact(ctx.xa)
       names <- sql"select name from foods".query[String].to[Vector].transact(ctx.xa)
     } yield {
@@ -67,11 +62,14 @@ class ExampleTest extends SandboxTest {
     }
   }
 
-  fixture.test("clean slate test") { ctx: Context =>
-    val cio = for {
-      names <- sql"select name from foods".query[String].to[Vector].transact(ctx.xa)
-    } yield {
-      assertEquals(names, Vector())
+  (0 to 100).map { i =>
+    fixture.test(s"transactional test $i") { ctx: Context =>
+      for {
+        _ <- sql"insert into foods (name) values ('pizza')".update.run.transact(ctx.xa)
+        names <- sql"select name from foods".query[String].to[Vector].transact(ctx.xa)
+      } yield {
+        assertEquals(names, Vector("pizza"))
+      }
     }
   }
 }
