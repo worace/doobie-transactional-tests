@@ -7,8 +7,9 @@ import doobie._
 import doobie.implicits._
 import com.dimafeng.testcontainers.PostgreSQLContainer
 import com.dimafeng.testcontainers.munit.TestContainerForEach
+import munit.CatsEffectSuite
 
-class TestContainersExampleTest extends IOSuite with TestContainerForEach {
+class TestContainersExampleTest extends CatsEffectSuite with TestContainerForEach {
   override val containerDef = PostgreSQLContainer.Def()
   implicit val contextShift = cats.effect.IO.contextShift(ExecutionContext.global)
 
