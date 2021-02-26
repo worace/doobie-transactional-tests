@@ -11,7 +11,6 @@ import doobie.implicits._
 import munit.CatsEffectSuite
 
 abstract class SandboxTest extends CatsEffectSuite {
-  implicit val contextShift = cats.effect.IO.contextShift(ExecutionContext.global)
   val blocker = cats.effect.Blocker.liftExecutionContext(doobie.util.ExecutionContexts.synchronous)
 
   def startPool: HikariDataSource = {

@@ -11,7 +11,6 @@ import munit.CatsEffectSuite
 
 class TestContainersExampleTest extends CatsEffectSuite with TestContainerForEach {
   override val containerDef = PostgreSQLContainer.Def()
-  implicit val contextShift = cats.effect.IO.contextShift(ExecutionContext.global)
 
   def connect(container: PostgreSQLContainer): Transactor[IO] = {
     Transactor.fromDriverManager[IO](
