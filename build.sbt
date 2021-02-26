@@ -15,7 +15,8 @@ lazy val root = (project in file("."))
       "org.postgresql" % "postgresql" % "42.2.12",
       "org.scalameta" %% "munit" % "0.7.4" % Test,
       "com.dimafeng" %% "testcontainers-scala-postgresql" % "0.39.2" % Test,
-      "com.dimafeng" %% "testcontainers-scala-munit" % "0.39.2" % Test
+      "com.dimafeng" %% "testcontainers-scala-munit" % "0.39.2" % Test,
+      "org.typelevel" %% "munit-cats-effect-2" % "0.13.1" % Test
     ),
     testFrameworks += new TestFramework("munit.Framework")
   )
